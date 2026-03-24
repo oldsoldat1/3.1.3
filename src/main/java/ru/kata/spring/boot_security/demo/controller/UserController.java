@@ -60,13 +60,13 @@ public class UserController {
         return "redirect:/admin";
     }
 
-    @GetMapping("/admin/edit")
-    public String editUser(@RequestParam("id") int id, Model model) {
-        User user = this.userServices.getUser(id);
-        model.addAttribute("user", user);
-        model.addAttribute("listUser", this.userServices.getAllUsers());
-        return "admin";
-    }
+//    @GetMapping("/admin/edit")
+//    public String editUser(@RequestParam("id") int id, Model model) {
+//        User user = this.userServices.getUser(id);
+//        model.addAttribute("user", user);
+//        model.addAttribute("listUser", this.userServices.getAllUsers());
+//        return "admin";
+//    }
 
     @GetMapping("/user")
     public String userData(@AuthenticationPrincipal User authenticatedUser,
