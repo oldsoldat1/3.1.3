@@ -33,6 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .csrf().disable()  // Временно отключаем CSRF для тестирования
                 .authorizeRequests()
                 .antMatchers("/login", "/css/**", "/js/**").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
@@ -41,7 +42,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .loginPage("/login")
+                .loginProcessingUrl("/login")
                 .successHandler(successUserHandler)
+                .failureUrl("/login?error=true")
                 .permitAll()
                 .and()
                 .logout()

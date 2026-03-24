@@ -7,14 +7,14 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="icon" href="../icons/Spring_Boot.svg.png" type="image/png">
     <title>User page</title>
-
 </head>
 <body>
 <div class="container-fluid">
     <nav class="navbar navbar-light bg-dark text-light">
-        <a class="navbar-brand">user@mail.ru with roles: USER
-
-
+        <!-- Динамическое отображение информации о пользователе -->
+        <a class="navbar-brand">
+            <span sec:authentication="name"></span> with roles:
+            <span th:each="role : ${#authentication.getAuthorities()}" th:text="${role.authority} + ' '"></span>
         </a>
         <form th:action="@{/logout}" method="post" class="form-inline">
             <button class="btn btn-outline-dark my-2 my-sm-0 text-white-50" type="submit">Logout</button>
@@ -31,9 +31,8 @@
             </div>
         </div>
         <div class="col-10 bg-light min-vh-100">
-            <div class="tab-content" id="nav-tabContent " >
+            <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="list-admin" role="tabpanel" aria-labelledby="list-admin-list">
-
                     <p class="h1">Admin panel</p>
 
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -43,11 +42,10 @@
                         <li class="nav-item">
                             <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">New user</a>
                         </li>
-
                     </ul>
 
                     <div class="tab-content" id="myTabContent">
-
+                        <!-- Вкладка со списком пользователей -->
                         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                             <p class="h3 mt-2">All users</p>
                             <table class="table table-striped bg-white">
@@ -65,6 +63,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
+                                <!-- Динамическое заполнение таблицы из БД -->
                                 <tr th:each="user : ${listUser}">
                                     <th scope="row" th:text="${user.id}">1</th>
                                     <td th:text="${user.firstNameUser}">First Name</td>
@@ -76,7 +75,7 @@
                                         <span th:each="role : ${user.roles}" th:text="${role.name} + ' '"></span>
                                     </td>
                                     <td>
-                                        <a th:href="@{/admin/edit(id=${user.id})}" class="btn btn-sm btn-info">Edit</a>
+                                        <a th:href="@{/admin/edit(id=${user.id})}" class="btn btn-sm btn-primary">Edit</a>
                                     </td>
                                     <td>
                                         <a th:href="@{/admin/remove(id=${user.id})}"
@@ -87,53 +86,56 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        <!-- Вкладка добавления пользователя -->
                         <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                             <p class="h3 mt-2">Add new user</p>
-                            <form th:action="@{/admin/add}" th:object="${user}" method="post">
+                            <form th:action="@{/admin/add}" method="post">
                                 <div class="form-row">
                                     <div class="form-group col-md-5">
                                         <label for="firstNameUser">First name</label>
-                                        <input type="text" class="form-control" id="firstNameUser" th:field="*{firstNameUser}"  placeholder="Ivan" required>
+                                        <input type="text" class="form-control" id="firstNameUser" name="firstNameUser" required>
                                     </div>
                                     <div class="form-group col-md-5">
                                         <label for="secondNameUser">Last name</label>
-                                        <input type="text" class="form-control" id="secondNameUser" th:field="*{secondNameUser}" placeholder="Ivanov" required>
+                                        <input type="text" class="form-control" id="secondNameUser" name="secondNameUser" required>
                                     </div>
                                     <div class="form-group col-md-2">
                                         <label for="hospitalSite">Hospital Site</label>
-                                        <input type="number" class="form-control" id="hospitalSite" th:field="*{hospitalSite}" min="1" max="15" required>
+                                        <input type="number" class="form-control" id="hospitalSite" name="hospitalSite" min="1" max="10" required>
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-5">
-                                        <label for="addressUser">Address User</label>
-                                        <input type="text" class="form-control" id="addressUser" th:field="*{addressUser}" required>
+                                        <label for="addressUser">Address</label>
+                                        <input type="text" class="form-control" id="addressUser" name="addressUser" required>
                                     </div>
                                     <div class="form-group col-md-5">
                                         <label for="phoneNumberUser">Phone</label>
-                                        <input type="text" class="form-control" id="phoneNumberUser" th:field="*{phoneNumberUser}" pattern="\d{11}" maxlength="11" required>
+                                        <input type="text" class="form-control" id="phoneNumberUser" name="phoneNumberUser" pattern="\d{11}" maxlength="11" required>
+                                        <small class="form-text text-muted">11 digits, e.g., 89136134371</small>
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-5">
-                                        <label for="username">User Name</label>
-                                        <input type="text" class="form-control" id="username" th:field="*{username}" required>
+                                        <label for="username">Username</label>
+                                        <input type="text" class="form-control" id="username" name="username" required>
                                     </div>
                                     <div class="form-group col-md-5">
                                         <label for="password">Password</label>
-                                        <input type="password" class="form-control" id="password" th:field="*{password}" required>
+                                        <input type="password" class="form-control" id="password" name="password" required>
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-5">
-                                        <label for="inputRoles">Role</label>
-                                        <select id="inputRoles" name="roles" class="form-control" required>
-                                            <option value="" selected disabled>Choose roles...</option>
-                                            <option value="ROLE_ADMIN">Admin</option>
-                                            <option value="ROLE_USER">User</option>
-                                        </select>
-                                        <div class="invalid-feedback">
-                                            Please select a role
+                                        <label>Roles</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="roles" value="ROLE_ADMIN" id="roleAdmin">
+                                            <label class="form-check-label" for="roleAdmin">ADMIN</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="roles" value="ROLE_USER" id="roleUser" checked>
+                                            <label class="form-check-label" for="roleUser">USER</label>
                                         </div>
                                     </div>
                                 </div>
@@ -142,29 +144,24 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="tab-pane fade" id="list-user" role="tabpanel" aria-labelledby="list-user-list">
-                    <!-- Добавлен контент для наглядности -->
                     <h3>User information-page</h3>
-                    <p>Здесь будет контент для пользователя</p>
+                    <p>Here will be user information</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-
-
-
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-                integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-                crossOrigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-            crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-            crossorigin="anonymous"></script>
-
-
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 </body>
 </html>
