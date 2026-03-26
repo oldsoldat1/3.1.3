@@ -10,41 +10,49 @@ import java.util.Set;
 
 @Entity
 @Table(name = "user", schema = "users")
-public class User implements UserDetails{
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_user", nullable = false)
     private Integer id;
 
-    @Column(name = "first_name_user", nullable = false,  length = 100)
+    @Column(name = "first_name_user", nullable = false, length = 100)
     private String firstNameUser;
 
     @Column(name = "second_name_user", nullable = false)
     private String secondNameUser;
 
-    @Column(name = "address_user", nullable = false)
-    private String addressUser;
+    @Column(name = "email_user", unique = true, nullable = false)
+    private String email;
 
     @Column(name = "phone_number_user", nullable = false, length = 11)
     private String phoneNumberUser;
 
-    @Column(name = "hospital_site", nullable = false)
-    private Integer hospitalSite;
-
-    @Column(name = "username", unique = true, nullable = false)
-    private  String username;
+    @Column(name = "age_user", nullable = false)
+    private Integer age;
 
     @Column(name = "password", nullable = false)
-    private  String password;
+    private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER,  cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "id_user"),
             inverseJoinColumns = @JoinColumn(name = "id_role"))
-
     private Set<Role> roles = new HashSet<>();
 
+    public User() {
+    }
+
+    public User(String email, String password, String firstNameUser,
+                String secondNameUser, String phoneNumberUser, Integer age) {
+        this.email = email;
+        this.password = password;
+        this.firstNameUser = firstNameUser;
+        this.secondNameUser = secondNameUser;
+        this.phoneNumberUser = phoneNumberUser;
+        this.age = age;
+    }
 
     public Integer getId() {
         return id;
@@ -70,12 +78,12 @@ public class User implements UserDetails{
         this.secondNameUser = secondNameUser;
     }
 
-    public String getAddressUser() {
-        return addressUser;
+    public String getEmail() {
+        return email;
     }
 
-    public void setAddressUser(String addressUser) {
-        this.addressUser = addressUser;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPhoneNumberUser() {
@@ -86,12 +94,12 @@ public class User implements UserDetails{
         this.phoneNumberUser = phoneNumberUser;
     }
 
-    public Integer getHospitalSite() {
-        return hospitalSite;
+    public Integer getAge() {
+        return age;
     }
 
-    public void setHospitalSite(Integer hospitalSite) {
-        this.hospitalSite = hospitalSite;
+    public void setAge(Integer age) {
+        this.age = age;
     }
 
     public Set<Role> getRoles() {
@@ -118,11 +126,7 @@ public class User implements UserDetails{
 
     @Override
     public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+        return email;
     }
 
     @Override
@@ -143,5 +147,18 @@ public class User implements UserDetails{
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstNameUser='" + firstNameUser + '\'' +
+                ", secondNameUser='" + secondNameUser + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumberUser='" + phoneNumberUser + '\'' +
+                ", age=" + age +
+                ", roles=" + roles +
+                '}';
     }
 }

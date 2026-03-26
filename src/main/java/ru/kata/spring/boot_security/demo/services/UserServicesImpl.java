@@ -47,16 +47,17 @@ public class UserServicesImpl implements UserServices {
     }
 
     @Override
-    public User findByUserName(String username) {
-        return userDao.findByUsername(username);
+    public User findByEmail(String email) {
+        return userDao.findByEmail(email);
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userDao.findByUsername(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userDao.findByEmail(email);
         if (user == null) {
-            throw new UsernameNotFoundException("User not found with username: " + username);
+            throw new UsernameNotFoundException("User not found with email: " + email);
         }
         return user;
     }
+
 }
